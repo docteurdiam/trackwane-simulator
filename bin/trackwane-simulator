@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'trackwane-simulator'
+exit Jeweler::Generator::Application.run!(*ARGV)
+
