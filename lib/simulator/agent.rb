@@ -3,8 +3,8 @@ require 'ccsv'
 
 class Agent
 
-  def run(filename, sleep_time)
-    imei_number = File.basename(filename, ".csv")
+  def run(filename, sleep_time, target, logger)
+    imei_number = File.basename(filename, ".csv").split(".")[0]
     begin
       is_header = true
       Ccsv.foreach(filename) do |row|
@@ -16,7 +16,8 @@ class Agent
         next if row[0] =~ /Alarme:/
         next if row[0] =~ /Total:/
         event = create_event(row, imei_number)
-        RestClient.post "http://#{ARGV[0]}/events", {data: event}
+        RestClient.post "http://#{target}/events", {data: event}
+        logger.debug("#{imei_number} successfully emitted an event. Sleeping for #{sleep_time} seconds")
         sleep(sleep_time)
       end
     rescue Exception => e

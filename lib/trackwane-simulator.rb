@@ -19,7 +19,6 @@ Trollop::die :mode, "must be either agent or scraper" unless opts[:mode] && ["ag
 Trollop::die :file, "must exist" unless File.exists?(opts[:file])
 
 settings = YAML.load(File.open(opts[:file]))
-puts settings
 settings[:logger] = logger
 
 if opts[:mode] == "scaper"
@@ -33,10 +32,10 @@ elsif opts[:mode] == "agent"
   Dir[test_data].each do |archive|
     logger.info "Launching an agent with #{archive}"
     csv_file = archive[0..archive.length()-5]
-    Storage.unzip(archive)
+    Storage.unzip(archive, settings["output_directory"])
     threads << Thread.start do
-      puts "Reading data from #{csv_file}"
-      Agent.new.run(csv_file, 5)
+      logger.info "Reading data from #{csv_file}"
+      Agent.new.run(csv_file, 30.seconds, settings["target"], logger)
     end
   end
   threads.each { |t| t.join }   

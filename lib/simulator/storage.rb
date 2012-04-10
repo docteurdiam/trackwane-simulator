@@ -6,7 +6,9 @@ class Storage
   def self.unzip(file, output_dir)
     Zip::ZipFile.open(file) { |zip_file|
       zip_file.each { |f|
-        zip_file.extract(f, File.join(output_dir, f.to_s))
+        filename = File.join(output_dir, f.to_s)
+        File.delete(filename) if File.exists?(filename)
+        zip_file.extract(f, filename)
       }
     }
   end
