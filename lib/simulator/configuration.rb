@@ -1,7 +1,7 @@
 class Configuration
 
   def parse(filename)
-    cfg = YAML.load(filename)
+    cfg = YAML.load_file(filename)
     unless Dir.exists?(cfg["working_directory"])
       raise "The working directory #{cfg["working_directory"]} does not exist"
     end

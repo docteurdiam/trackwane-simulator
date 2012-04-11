@@ -28,7 +28,7 @@ logger.info "Running the Trackwane Simulator"
 
 case opts[:mode]
   when "scraper"
-    ScraperTask(logger).new.execute(cfg)
+    ScraperTask.new(logger).execute(cfg)
   when "agent"
     AgentTask.new(logger, cfg["working_directory"], cfg["target"], 30.seconds).execute   
 end

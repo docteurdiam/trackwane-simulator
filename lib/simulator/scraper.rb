@@ -22,6 +22,7 @@ class Scraper
   def run(start_date, end_date)
     login
     start_date.upto(end_date) {|day| download(day)}
+    @logger.info "Finished downloading GPS data"
   end
 
   private
