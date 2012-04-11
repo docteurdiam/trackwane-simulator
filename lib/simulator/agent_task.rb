@@ -8,14 +8,14 @@ class AgentTask
   end
 
   def execute
-    threads = []
+    @threads = []
     test_data = File.expand_path(File.join(@working_directory, "*.zip"))
     Dir[test_data].each do |archive|
       @logger.info "Launching an agent with #{archive}"
       file = extract_csv(archive)
       launch_agent(file)
     end
-    threads.each { |t| t.join }
+    @threads.each { |t| t.join }
   end
 
   private
@@ -26,8 +26,8 @@ class AgentTask
   end
 
   def launch_agent(file)
-    threads << Thread.start do
-      logger.info "Reading data from #{csv_file}"
+    @threads << Thread.start do
+      @logger.info "Reading data from #{file}"
       Agent.new.run(file, @sleep_time, @target, @logger)
     end
   end
