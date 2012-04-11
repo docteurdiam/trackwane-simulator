@@ -9,15 +9,22 @@ class Scraper
 
   IGNORE_PREFIXES = ["All Sub User Trackers", "Sans", "AGEROUTE"]
 
-  def initialize(agent, settings)
+  def initialize(agent, cfg, logger)
     @agent = agent
-    @logger = settings[:logger] || Yell.new(STDOUT)
-    @output_directory = settings[:output_directory] || "/tmp"
-    @gateway = settings[:gateway] || "http://fleetservice.0-one.net/login.php"
-    @email = settings[:email] || "AGEROUTE"
-    @password = settings[:password] || "AG-001"
-    @report_page = settings[:report_page] || "http://fleetservice.0-one.net/pos_report.php"
+    @logger = logger
+    @output_directory = cfg["working_directory"]
+    @gateway = cfg["gateway"]
+    @email = cfg["email"]
+    @password = cfg["password"]
+    @report_page = cfg["report_page"]
   end
+
+  def run(start_date, end_date)
+    login
+    start_date.upto(end_date) {|day| download(day)}
+  end
+
+  private
 
   def login
     @logger.debug "Connecting to [#{@gateway}] using login [#{@email}] and password [#{@password}]"
@@ -25,11 +32,6 @@ class Scraper
     page.form.email = @email
     page.form.Password = @password
     page.form.submit
-  end
-
-  def run(start_date, end_date)
-    login
-    start_date.upto(end_date) {|day| download(day)}
   end
 
   def download(day)
