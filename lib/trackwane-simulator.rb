@@ -30,7 +30,7 @@ case opts[:mode]
   when "scraper"
     ScraperTask.new(logger).execute(cfg)
   when "agent"
-    AgentTask.new(logger, cfg["working_directory"], cfg["target"], 30.seconds).execute   
+    AgentTask.new(logger, cfg["working_directory"], cfg["target"], cfg["delta"], cfg["max_devices"]).execute
 end
 
 
