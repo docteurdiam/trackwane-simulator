@@ -21,7 +21,11 @@ Trollop::die :file, "must exist" unless File.exists?(opts[:file])
 cfg = Configuration.new.parse(opts[:file])
 
 logger = Yell.new do |log|
-  log.adapter :datefile, File.join(cfg["log_directory"], 'production.log')
+  if cfg["log"] == "console"
+    log.adapter STDOUT
+  else
+    log.adapter :datefile, File.join(cfg["log_directory"], 'production.log')
+  end
 end
 
 logger.info "Running the Trackwane Simulator"
