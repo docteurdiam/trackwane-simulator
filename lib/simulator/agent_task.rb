@@ -10,25 +10,22 @@ class AgentTask
 
   def execute
     @threads = []
-    test_data = File.expand_path(File.join(@working_directory, "*.zip"))
-    archives = Dir[test_data]
+    test_data = File.expand_path(File.join(@working_directory, "*.gz"))
+    archives = Dir[test_data].compact
     upper_bound = @max_devices > archives.size ? archives.size : @max_devices
     for i in 0..upper_bound
-      @logger.info "Launching an agent with #{archives[i]}"
-      file = extract_csv(archives[i])
-      launch_agent(file)
+      launch_agent(archives[i])
     end
     @threads.each { |t| t.join }
   end
 
   private
 
-  def extract_csv(archive)
-    Storage.unzip(archive, @working_directory)
-    archive[0..archive.length() - 5]
-  end
-
   def launch_agent(file)
+    unless file && File.exists?(file)
+      @logger.error "Cannot read data from {#{file}} as it does not exist. The agent cannot run."
+      return
+    end
     @threads << Thread.start do
       @logger.info "Reading data from #{file}"
       Agent.new.run(file, @sleep_time, @target, @logger)

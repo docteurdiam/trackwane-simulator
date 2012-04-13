@@ -2,8 +2,6 @@ require 'ruby-debug'
 
 require 'date'
 require 'active_support/all'
-require 'zip/zip'
-require 'zip/zipfilesystem'
 
 class Scraper
 
