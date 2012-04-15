@@ -1,10 +1,11 @@
 class AgentTask
 
-  def initialize(logger, working_directory, target, sleep_time, max_devices)
+  def initialize(logger, working_directory, target, sleep_time, error_factor, max_devices)
     @logger = logger
     @sleep_time = sleep_time.to_i.seconds
     @working_directory = working_directory
     @target = target
+    @error_factor = error_factor
     @max_devices = max_devices.to_i
   end
 
@@ -28,7 +29,7 @@ class AgentTask
     end
     @threads << Thread.start do
       @logger.info "Reading data from #{file}"
-      Agent.new.run(file, @sleep_time, @target, @logger)
+      Agent.new.run(file, @sleep_time, @error_factor, @target, @logger)
     end
   end
 

@@ -1,7 +1,3 @@
-require 'ruby-debug'
-
-require 'date'
-require 'active_support/all'
 
 class Scraper
 

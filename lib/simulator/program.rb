@@ -7,7 +7,7 @@ class Program
     end
 
     Trollop::die :file, "must be provided" unless opts[:file]
-    Trollop::die :mode, "must be either agent or scraper" unless opts[:mode] && ["agent", "scraper"].include?(opts[:mode])
+    Trollop::die :mode, "must be either agent or scraper" unless opts[:mode] && %w(agent scraper).include?(opts[:mode])
     Trollop::die :file, "must exist" unless File.exists?(opts[:file])
 
     cfg = Configuration.new.parse(opts[:file])
@@ -26,7 +26,9 @@ class Program
       when "scraper"
         ScraperTask.new(logger).execute(cfg)
       when "agent"
-        AgentTask.new(logger, cfg["working_directory"], cfg["target"], cfg["delta"], cfg["max_devices"]).execute
+        AgentTask.new(logger, cfg["working_directory"], cfg["target"], cfg["delta"], cfg["error_factor"].to_i, cfg["max_devices"]).execute
+      else
+        # type code here
     end
   end
 
