@@ -11,11 +11,11 @@ class AgentTask
 
   def execute
     @threads = []
-    test_data = File.expand_path(File.join(@working_directory, "*.gz"))
+    test_data = File.join(@working_directory, "*.csv.gz")
     archives = Dir[test_data].compact
     upper_bound = @max_devices > archives.size ? archives.size : @max_devices
     for i in 0..upper_bound
-      launch_agent(archives[i])
+      launch_agent(archives[i]) if archives[i]
     end
     @threads.each { |t| t.join }
   end
